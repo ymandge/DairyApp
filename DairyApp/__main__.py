@@ -1,9 +1,9 @@
 """ Main file for Dairy App """
 
 from flask import Flask
-
 from DairyApp.api import api_v1
 
+from DairyApp.libs.dblib.base import Base, engine
 
 # Todo - read app configuration from config.py file
 def configure_app(_flask_app):
@@ -14,6 +14,7 @@ def configure_app(_flask_app):
     _flask_app.config["RESTX_MASK_SWAGGER"] = False
     _flask_app.config["ERROR_404_HELP"] = False
     _flask_app.config["SWAGGER_UI_JSONEDITOR"] = False
+    #_flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:a@localhost/dairyappdb'
 
 
 def make_app(config_name=None):  # config_name can be dev or production
@@ -28,6 +29,9 @@ def make_app(config_name=None):  # config_name can be dev or production
 
     with app.app_context():
         app.extensions["Test instance"] = "Test instance value"
+
+    # generate database schema
+    Base.metadata.create_all(engine)
 
     return app
 
