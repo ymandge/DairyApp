@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 from sqlalchemy import Column, Integer, String, DateTime, Date
 
-from DairyApp.libs.dblib.base import Base, engine
-from datetime import datetime 
+from DairyApp.libs.dblib.base import Base
+from datetime import datetime
 
-class Owner(Base):
+class OwnerModel(Base):
 
     __tablename__ = 'owners'
 

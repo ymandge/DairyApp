@@ -20,6 +20,7 @@ owner_model = api.model('Dairy Owner information',
 
 @api.route('/')
 class OwnerResource(Resource):
+
     @api.expect(owner_model, validate=True)
     def post(self):
         """
@@ -66,3 +67,13 @@ class OwnerResource(Resource):
 
 
         return {"message": "Owner updated successfully"}, HTTPStatus.OK
+    
+
+@api.route('/<string:name>')
+class GetSpecificOwner(Resource):
+
+    
+    def get(self, name):
+        "Get specific owner"
+
+        return {"message" : f"hello :{name}"}, HTTPStatus.OK
