@@ -2,6 +2,7 @@
 
 from DairyApp.models.owner_model import OwnerModel
 from DairyApp.libs.owner_lib import OwnerLib
+import json
 
 class OwnerHandler:
     "This class is a intermmediator between owner API and low level owner_lib"
@@ -9,31 +10,31 @@ class OwnerHandler:
     def create_owner(self, payload_data):
         "This method will validate and create new owner"
 
-        try:
-            # Validation
+        # Validation
 
-            test_owner = OwnerModel(
-                name=payload_data["name"],
-                address=payload_data["address"],
-                mobile=payload_data["mobile"],
-                dob=payload_data["dob"],
-                email=payload_data["email"],
-                password=payload_data["password"],
-            )
+        test_owner = OwnerModel(
+            name=payload_data["name"],
+            address=payload_data["address"],
+            mobile=payload_data["mobile"],
+            dob=payload_data["dob"],
+            email=payload_data["email"],
+            password=payload_data["password"],
+        )
 
-            # Add critical/error/info/debug logging
+        # Add critical/error/info/debug logging
 
-            # check id owner is already exists if so then return 400 (Bad request); Owner already exists
+        # check id owner is already exists if so then return 400 (Bad request); Owner already exists
 
-            # Validate the input parameters
+        # Validate the input parameters
 
-            # Create Owner instance and send it to low level lib
-            owner = OwnerLib()
-            owner.add_owner(test_owner)
-
-        except Exception as ex:
-            print("Caught the exception: ", str(ex))
-            # return
+        # Create Owner instance and send it to low level lib
+        owner = OwnerLib()
+        owner.add_owner(test_owner)
 
     def get_all_owners(self):
         """temp"""
+        owner = OwnerLib()
+        print("Getting all owners")
+        owner_list = owner.get_all_owner()
+        print(owner_list)
+        return json.dumps(owner_list)

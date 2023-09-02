@@ -22,6 +22,8 @@ class OwnerLib:
             session.close()
         except Exception as ex:
             session.rollback()
+            print(str(ex))
+            raise ex
         finally:
             # if session open
             session.close() 
@@ -33,8 +35,31 @@ class OwnerLib:
 
         # create a new session
         session = Session()
-        query = session.query(OwnerModel)
+        #all_rows = session.query(OwnerModel).all()
+
+                # Retrieve all rows from the database table
+        all_rows = session.query(OwnerModel).all()
+
+        # Get column names from the model
+        columns = OwnerModel.__table__.columns.keys()
+
+        # Print column names
+        print("Column Names:", columns)
+
+        # Print all rows with column values
+        owners_list = []
+        for row in all_rows:
+            owner_dict = {}
+            for column in columns:
+                if column == "dob" or column == "date_created":
+                    owner_dict[column] = str(getattr(row, column))
+                else:
+                    owner_dict[column] = getattr(row, column)
+
+            owners_list.append(owner_dict)
+            
         session.close()
+        return owners_list
     
     def get_owner(uname):   # id, name, emailid
         """Get specific owner"""
