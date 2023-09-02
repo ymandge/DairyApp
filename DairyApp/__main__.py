@@ -4,6 +4,7 @@ from flask import Flask
 from DairyApp.api import api_v1
 
 from DairyApp.libs.dblib.base import Base, engine
+from sqlalchemy_utils import database_exists, create_database
 
 # Todo - read app configuration from config.py file
 def configure_app(_flask_app):
@@ -30,6 +31,9 @@ def make_app(config_name=None):  # config_name can be dev or production
     with app.app_context():
         app.extensions["Test instance"] = "Test instance value"
 
+    if not database_exists(engine.url):
+        create_database(engine.url)
+    
     # generate database schema
     Base.metadata.create_all(engine)
 
