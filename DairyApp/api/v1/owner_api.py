@@ -29,13 +29,17 @@ class OwnerResource(Resource):
         try:
             # Return a success response
             owner_handler_instance = OwnerHandler()
-            owner_handler_instance.create_owner(api.payload)
-            return {'message': 'Owner created successfully 22'}, HTTPStatus.CREATED   # Created
+            result = owner_handler_instance.create_owner(api.payload)     
+            return {
+                'message': result['message']
+            }, result['error_code']   # Created
+            
+            return 
         except Exception as ex:
-            # log.error("Caught the exception: ", str(ex))
+            # log.error("Caught the exception while adding owner: ", str(ex))
             return (
                 {
-                    "message": "Failed to add owner, error - " + str(ex)
+                    "message": "Failed to add owner"
                 },
                 HTTPStatus.INTERNAL_SERVER_ERROR    # 500
             )
@@ -69,11 +73,41 @@ class OwnerResource(Resource):
         return {"message": "Owner updated successfully"}, HTTPStatus.OK
     
 
-@api.route('/<string:name>')
-class GetSpecificOwner(Resource):
-
-    
-    def get(self, name):
+@api.route('/<int:uid>')
+class GetSpecificOwner(Resource):  
+    def get(self, uid):
         "Get specific owner"
 
-        return {"message" : f"hello :{name}"}, HTTPStatus.OK
+        try:
+            # Return a success response
+            print("GetSpecificOwner User id = " + str(uid))
+            owner_handler_instance = OwnerHandler()
+            return owner_handler_instance.get_owner_using_id(uid)
+        except Exception as ex:
+            # log.error("Caught the exception: ", str(ex))
+            return (
+                {
+                    "message": "Failed to get owner, error - " + str(ex)
+                },
+                HTTPStatus.INTERNAL_SERVER_ERROR    # 500
+            )
+        
+
+# @api.route('/<string:uname>')
+# class GetSpecificOwner(Resource):  
+#     def get(self, uname):
+#         "Get specific owner"
+
+#         try:
+#             # Return a success response
+#             print("GetSpecificOwner User name = " + str(uname))
+#             owner_handler_instance = OwnerHandler()
+#             return owner_handler_instance.get_owner_using_name(uname)
+#         except Exception as ex:
+#             # log.error("Caught the exception: ", str(ex))
+#             return (
+#                 {
+#                     "message": "Failed to get owner, error - " + str(ex)
+#                 },
+#                 HTTPStatus.INTERNAL_SERVER_ERROR    # 500
+#             )
