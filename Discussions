@@ -1,0 +1,193 @@
+: 
+
+
+Table: Customer
+id, name, address, mobile, email, dob, oid, registered_for_msg, profile_photo, date_created, date_updated
+------------------------
+Table: Product
+id, type, name, Price, oid, date_created, date_updated
+------------------------
+Table: Delivery Partner
+id, name, address, mobile, dob, oid, profile_photo, date_created, date_updated
+-------------------------
+Table: Owner
+id, name, address, mobile, dob, licence, secret(password + salt), email, uname, profile_photo, date_created, date_updated
+-------------------------
+
+shift, cid-prod-owner relationship
+
+Table: Order
+---------------------------------
+owners:1000
+cids=200*1000=2,00,000
+Monthly partition
+
+60lac*12=7.2cr
+
+Test: benchmarking for large amount of data
+==================================
+Table: Order, month-wise-partition
+order_id, cx_id, product_id, owner_id, date, shift, dilivery_pid, quantity, msg_sent_flag
+
+-------------------------------
+owner will tag cx to delivery partner.
+no-sql relationship. eg redis
+dilvery_partner_id :
+{
+	owner_id_1  : [cx_id_1, cx_id_2, ...],
+	owner_id_2  : [cx_id_1, cx_id_2, ...]
+}
+==========================
+owner-cx relationship
+{
+oid: [c1, c2, c3]
+}
+---------------------------------
+Table: Msg
+order_id, msg, status
+----------------------------------
+
+
+
+Create/register new owner APIs: (This will go in one lib)
+
+Create owner : POST (It will take : id, name, address, mobile, dob, licens, secret, email, uname, profile_photo)
+
+	endpoint: https://<some domain>/owners
+
+	Json
+	{
+		id,
+		property:name 
+{
+	Length:
+	Type: string
+	Max_lenght
+	Min_lenght
+	IsRequired:False
+},
+	Address,
+	Mobile,
+	Dob,
+	Secret,
+	Email,
+	Uname,
+	profile_photo,
+
+}
+
+response json
+{
+	Status: OK
+	return  code: 200/404/
+	“Success”: True/false
+	“Message:” “Successfully create owner or Unknown error or Invalid input, etc.”
+}
+
+     Write the table for each and every use case for the third person:
+Input1  200 	OK
+       2, 
+
+
+
+Update owner: ~PUT
+Delete owner : ~DELETE
+View owners : GET
+
+MySQL/PostgreSQL database creation:
+We will create one class, it will be a lib
+
+
+—---------------------------------------------------
+21st  Feb 2023 Discussion
+
+Owner registration, update/get details
+input: 
+must have:
+name, mobile, secret
+good to have:
+profile_photo,address,dob,email
+output:
+status code
+msg
+Login
+input
+mobile/email
+password
+output
+status code
+msg
+cookie(discuss later)
+Add/update/get/delete rate, product from system
+KEEP IT FIX in V1, milk only
+How will the owner add/update/get/delete customer details from the system?
+add
+200+ cx
+Can it be automated? Image process?
+update:
+input:
+output:
+delete:
+cx
+search
+cx
+How to add/update/get orders to the system?
+Reduce time consuming activity
+must have:
+order_id, cx_id, product_id, owner_id, date, shift, quantity
+optional:
+dilivery_pid, msg_sent_flag
+
+How will the report be shown to the owner?
+cx wise?
+timewise
+missed days
+delivered days
+bill
+expense
+timewise for the owner?
+How much milk is delivered?
+Earning?
+Expenses?
+missed days?
+delivered days?
+
+How to make an app configurable for a dedicated server?
+build separate binary of app
+keep configurable
+
+How to handle load? DDOS
+
+
+
+
+===================================================
+11th March 2023 Discussion, Attendees - Avadhut and Yogesh
+
+Identify components/microservices
+
+ What would be the possible components/Micro serivices we need?
+Authentication and authorization
+DoLDAPAuth
+Import ldap as ld
+GetAPI // HTTP:GET, http:80:\ldapauth\
+Do basic validation for input params
+ld.doauthentication 
+return
+MyDairyApp
+…
+
+Possible libraries would be:
+Database lib
+Owner lib
+Order lib
+Delivery agent lib
+Logging lib
+
+
+
+
+Implement one POC API for the registering owner (Create Owner)
+MyDairyApp Microservice (I might have integrated other microservices i.e. authentications and authorization, pyment related third party micro service. And even my might load some libraries i.e import Owner as ow)
+
+
