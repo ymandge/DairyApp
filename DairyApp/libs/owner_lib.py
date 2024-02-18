@@ -31,62 +31,59 @@ class OwnerLib:
             # if session open
             session.close() 
 
-       
-
     def get_all_owner(self):
-        """Get all owners"""
+        """
+        Function to add owner into DB
+        Input  : Get all owners
+        Output : LIST[DICT{owners}]
+        """
 
-        # create a new session
-        session = Session()
+        try:
+            # create a new session
+            session = Session()
 
-        # Retrieve all rows from the database table
-        all_rows = session.query(OwnerModel).all()
-        print(type(all_rows)) 
-        # Get column names from the model
-        columns = OwnerModel.__table__.columns.keys()
+            # Retrieve all rows from the database table
+            all_rows = session.query(OwnerModel).all()
+            print(type(all_rows)) 
+            # Get column names from the model
+            columns = OwnerModel.__table__.columns.keys()
 
-        # Print column names
-        print("Column Names:", columns)
+            # Print column names
+            print("Column Names:", columns)
 
-        # Print all rows with column values
-        owners_list = []
-        for row in all_rows:
-            owner_dict = {}
-            for column in columns:
-                if column == "dob" or column == "date_created":
-                    owner_dict[column] = str(getattr(row, column))
-                else:
-                    owner_dict[column] = getattr(row, column)
+            # Print all rows with column values
+            owners_list = []
+            for row in all_rows:
+                owner_dict = {}
+                for column in columns:
+                    if column == "dob" or column == "date_created":
+                        owner_dict[column] = str(getattr(row, column))
+                    else:
+                        owner_dict[column] = getattr(row, column)
 
-            owners_list.append(owner_dict)
+                owners_list.append(owner_dict)   
 
-        # rows = session.query(OwnerModel).all()
-        # # Convert the rows to a list of dicts
-        # dict_rows = list(map(dict, rows))
-        # print(dict_rows)
-            
-        session.close()
-        return owners_list
+            return owners_list
+        except Exception as ex:
+            session.rollback()
+            raise ex
+        finally:
+            session.close()
     
     def get_owner_using_id(self,uid):   # id, name, emailid
         """Get specific owner"""    
         try:
             # create a new session
             session = Session()
-            print("in owner lib")
 
             # Get column names from the model
             columns = OwnerModel.__table__.columns.keys()
 
             # Retrieve perticular row using id from the database table
-            print("OwnerLib User id = " + str(uid))
-            #user = session.query(OwnerModel).get({"id": uid})
-           
+            #user = session.query(OwnerModel).get({"id": uid}) 
             user = session.query(OwnerModel).filter(OwnerModel.id == uid)
             print(type(user)) 
             
-            columns = OwnerModel.__table__.columns.keys()
-
             # # Print all rows with column values
             owners_list = []
            
@@ -103,12 +100,8 @@ class OwnerLib:
             return owners_list
         except Exception as ex:
             session.rollback()
-            print("in exception")
-            print(str(ex))
             raise ex
         finally:
-            # if session open
-            print("in finally")
             session.close() 
 
 
@@ -136,6 +129,36 @@ class OwnerLib:
     def delete_owner(uname):
         """Delete owner"""
 
-    def update_owner():
-        """Update"""
+    def update_owner(self, new_owner):
+        """
+        Function to update owner into DB
+        Input  : Owner Model
+        Output : Int ; Number of owner updated
+        """
+        # TODO - Revisit for appropriate return value
+        print("In lib : new_owner {}".format(str(new_owner)))
+        try: 
+            session = Session()
+
+            #Check user is present in DB
+            user_present = session.query(OwnerModel).filter(OwnerModel.email == new_owner["email"]).first()
+
+            if user_present :
+                #Update perticular field
+                #user = session.query(OwnerModel).filter(OwnerModel.email == new_owner["email"]).update({"address" : new_owner["address"]})
+
+                #Update row using model
+                rows_updated = session.query(OwnerModel).filter(OwnerModel.email == new_owner["email"]).update(new_owner)
+                print("No of rows updated : {}".format(str(rows_updated)))
+                session.commit()
+                return rows_updated
+            
+            return 0
+            
+        except Exception as ex:
+            session.rollback()
+            raise ex
+        finally:
+            # if session open
+            session.close()
 

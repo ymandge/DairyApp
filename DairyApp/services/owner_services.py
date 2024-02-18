@@ -40,20 +40,29 @@ class OwnerHandler:
             return {'error_code': HTTPStatus.INTERNAL_SERVER_ERROR,'message': 'Failed to add owner.'}
 
     def get_all_owners(self):
-        """temp"""
         owner = OwnerLib()
-        print("Getting all owners")
-        owner_list = owner.get_all_owner()
-        print(owner_list)
-        return json.dumps(owner_list)
+        try :
+            owner_list = owner.get_all_owner()
+            #print(owner_list)
+            #return json.dumps(owner_list)
+            #return {'error_code': HTTPStatus.OK,'message': json.dumps(owner_list)}
+            message = 'No owner found' if len(owner_list) == 0 else json.dumps(owner_list)
+            return {'error_code': HTTPStatus.OK,'message': message}
+        except Exception as ex:
+            print("MyLog :{}".format(str(ex)))
+            #log(str(ex)) 
+            return {'error_code': HTTPStatus.INTERNAL_SERVER_ERROR,'message': 'Failed to get owners.'}
     
     def get_owner_using_id(self,uid):
-
         owner = OwnerLib()
-        print("OwnerService User id = " + str(uid))
-        owner = owner.get_owner_using_id(int(uid))
-        print("After")
-        return json.dumps(owner)
+        try :
+            result = owner.get_owner_using_id(int(uid)) 
+            message = str('ID : {} not found, Please enter valid ID').format(uid) if len(result) == 0 else json.dumps(result)
+            return {'error_code': HTTPStatus.OK,'message': message}
+        except Exception as ex:
+            print("MyLog :{}".format(str(ex)))
+            #log(str(ex)) 
+            return {'error_code': HTTPStatus.INTERNAL_SERVER_ERROR,'message': 'Failed to get owner.'}
     
     # def get_owner_using_name(self,uname):
 
@@ -62,4 +71,25 @@ class OwnerHandler:
     #     owner = owner.get_owner_using_name(uname)
     #     print("After")
     #     return json.dumps(owner)
+        
+    def update_owner(self,payload_data):
+        # Validation
+        test_owner = OwnerModel(
+            name=payload_data["name"],
+            address=payload_data["address"],
+            mobile=payload_data["mobile"],
+            dob=payload_data["dob"],
+            email=payload_data["email"],
+            password=payload_data["password"],
+        )
+
+        owner = OwnerLib()
+        try :
+            result = owner.update_owner(payload_data)
+            message = str('{} not found, Please create account').format(payload_data["name"]) if result == 0 else str('{} updated successfully.').format(payload_data["name"])
+            return {'error_code': HTTPStatus.OK,'message': message}
+        except Exception as ex:
+            print("MyLog :{}".format(str(ex)))
+            #log(str(ex)) 
+            return {'error_code': HTTPStatus.INTERNAL_SERVER_ERROR,'message': 'Failed to update owner.'}
 
