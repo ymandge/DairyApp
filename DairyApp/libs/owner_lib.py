@@ -16,7 +16,7 @@ class OwnerLib:
         """
         Function to add owner into DB
         Input  : Owner Model
-        Output : boolean ; Success(True), Failure(False) 
+        Output : ??
         """
         # TODO - Revisit for appropriate return value
         
@@ -33,8 +33,8 @@ class OwnerLib:
 
     def get_all_owner(self):
         """
-        Function to add owner into DB
-        Input  : Get all owners
+        Function to get all owners from DB
+        Input  : None
         Output : LIST[DICT{owners}]
         """
 
@@ -65,7 +65,7 @@ class OwnerLib:
 
             return owners_list
         except Exception as ex:
-            session.rollback()
+            # session.rollback() // Not need IMO, because we are not performing any write operation on db in this function
             raise ex
         finally:
             session.close()
@@ -99,7 +99,7 @@ class OwnerLib:
 
             return owners_list
         except Exception as ex:
-            session.rollback()
+            # session.rollback() // Not need IMO, because we are not performing any write operation on db in this function
             raise ex
         finally:
             session.close() 

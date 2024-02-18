@@ -102,10 +102,11 @@ class GetSpecificOwner(Resource):
                     'message': result['message']
                 }, result['error_code']   # Created
         except Exception as ex:
+            print("MyLog: {}".format(str(ex)))
             # log.error("Caught the exception: ", str(ex))
             return (
                 {
-                    "message": "Failed to get owner, error - " + str(ex)
+                    "message": "Failed to get owner"
                 },
                 HTTPStatus.INTERNAL_SERVER_ERROR    # 500
             )

@@ -1,0 +1,17 @@
+1. DairyOwner Table:
+    Represents dairy owners who buy licenses to operate.
+
+2. Customer Table:
+    Represents customers who purchase milk products from dairy owners.
+
+3. DeliveryBoy Table:
+    Represents delivery boys who work for dairy owners and deliver milk to customers.
+
+4. Product Table:
+    Represents the different milk products (e.g., Cow milk, Buffalo milk) with their rates.
+
+5. Order Table:
+    Stores the milk delivery orders placed by customers. Contains fields such as order_date, quantity, product_id, customer_id, delivery_boy_id, etc.
+
+6. Report Table:
+    Stores various reports based on daily, weekly, monthly, or yearly data.
