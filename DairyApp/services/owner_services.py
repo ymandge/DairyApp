@@ -53,7 +53,13 @@ class OwnerHandler:
             #log(str(ex)) 
             return {'error_code': HTTPStatus.INTERNAL_SERVER_ERROR,'message': 'Failed to get owners.'}
     
-    def get_owner_using_id(self,uid):
+    def get_owner_using_id(self, uid):
+        """
+        TODO : Update function string
+        """
+
+        # TODO : Add validation for uid such as lower and upper limit
+
         owner = OwnerLib()
         try :
             result = owner.get_owner_using_id(int(uid)) 

@@ -14,7 +14,9 @@ customer_model = api.model('Customer information',
     'mobile': fields.String(required=True, description='Customer valid Mobile number'),
     'dob': fields.Date(required=True, description='Customer date of birth'),
     'email': fields.String(required=True, description='Customer valid email'),
-    'oid': fields.String(required=True, description='Owner id'),
+    'owner_id': fields.String(required=True, description='Owner id'),
+    'registered_for_msg': fields.Boolean(required=False, description="Whether register to SMS service or not"),
+    # "profile_photo": fields.String(required=False, description="Profile Picture"),
 })
 
 
@@ -27,10 +29,28 @@ class CustomerResource(Resource):
         Create a new customer.
         """
 
+        try:
+            # Return a success response
+            customer_handler_instance = CustomerHandler()
+            result = customer_handler_instance.create_customer(api.payload)
+            return {
+                'message': result['message']
+            }, result['error_code']   # Created
+
+        except Exception as ex:
+            print("my log: {}".format(str(ex)))
+            # log.error("Caught the exception while adding owner: ", str(ex))
+            return (
+                {
+                    "message": "Failed to add customer"
+                },
+                HTTPStatus.INTERNAL_SERVER_ERROR    # 500
+            )
+
 
     def get(self):
         """
-        customer all Owners
+        Get all customers
         """
 
     def delete(self):
@@ -38,3 +58,27 @@ class CustomerResource(Resource):
 
     def put(self):
         "Update customer"
+
+
+@api.route('/<int:owner_id>')
+class GetSpecificOwnerCustomers(Resource):
+    def get(self, owner_id):
+        "Get specific owner customers"
+
+        try:
+            # Return a success response
+            print("GetSpecificOwner User id = " + str(owner_id))
+            customer_handler_instance = CustomerHandler()
+            result = customer_handler_instance.get_all_customers_by_owner_id(owner_id)
+            return {
+                    'message': result['message']
+                }, result['error_code']   # Created
+        except Exception as ex:
+            print("MyLog: {}".format(str(ex)))
+            # log.error("Caught the exception: ", str(ex))
+            return (
+                {
+                    "message": "Failed to get customer(s)\nPlease check logs for additional details."
+                },
+                HTTPStatus.INTERNAL_SERVER_ERROR    # 500
+            )
