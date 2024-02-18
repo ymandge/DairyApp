@@ -52,7 +52,10 @@ class OwnerResource(Resource):
         try:
             # Return a success response
             owner_handler_instance = OwnerHandler()
-            return owner_handler_instance.get_all_owners()
+            result = owner_handler_instance.get_all_owners()
+            return {
+                'message': result['message']
+            }, result['error_code']   # Created
         except Exception as ex:
             # log.error("Caught the exception: ", str(ex))
             return (
@@ -65,13 +68,25 @@ class OwnerResource(Resource):
     def delete(self):
         "Delete owner"
 
+    @api.expect(owner_model, validate=True)
     def put(self):
         "Update owner"
 
-
-
-        return {"message": "Owner updated successfully"}, HTTPStatus.OK
-    
+        try:
+            # Return a success response
+            owner_handler_instance = OwnerHandler()
+            result = owner_handler_instance.update_owner(api.payload)
+            return {
+                'message': result['message']
+            }, result['error_code']   # Created
+        except Exception as ex:
+            # log.error("Caught the exception: ", str(ex))
+            return (
+                {
+                    "message": "Failed to update owners, error - " + str(ex)
+                },
+                HTTPStatus.INTERNAL_SERVER_ERROR    # 500
+            )
 
 @api.route('/<int:uid>')
 class GetSpecificOwner(Resource):  
@@ -82,7 +97,10 @@ class GetSpecificOwner(Resource):
             # Return a success response
             print("GetSpecificOwner User id = " + str(uid))
             owner_handler_instance = OwnerHandler()
-            return owner_handler_instance.get_owner_using_id(uid)
+            result = owner_handler_instance.get_owner_using_id(uid)
+            return {
+                    'message': result['message']
+                }, result['error_code']   # Created
         except Exception as ex:
             # log.error("Caught the exception: ", str(ex))
             return (
